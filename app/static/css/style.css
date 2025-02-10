@@ -1,0 +1,47 @@
+* {
+  font-family: "Zen Kaku Gothic Antique", serif;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+body {
+  background: #F5F5F5;
+}
+
+.card_id {
+  top: 66px;
+  left: 20px;
+}
+
+.main_header {
+  height: 160px;
+  background: linear-gradient(90deg, #144B89 36.5%, #051323 100%);
+}
+
+ul {
+  list-style-type: none;
+}
+
+.popup, .popup_teacher {
+  transform: translate(-50%, -50%);
+}
+
+.w-35 {
+  width: 35%;
+}
+
+.bg-purple {
+  background-color: rgba(132, 0, 255, 0.527);
+}
+
+@media (min-width: 1200px) {
+  .col-xl-3 {
+    width: 23%;
+  }
+}
+.add-pill {
+  margin-right: 39%;
+}/*# sourceMappingURL=style.css.map */

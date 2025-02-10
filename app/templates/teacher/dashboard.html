@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учёт поломок · Для учителя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
+    <script type="module" src="{{ url_for('static', filename='/js/pill.js')}}"></script>
+    <script type="module" src="{{ url_for('static', filename='/js/filter.js')}}"></script>
+    <script type="module" src="{{ url_for('static', filename='/js/teacher.js')}}"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main_header rounded-bottom-2 text-center mb-2">
+        <div class="h-100 links d-flex justify-content-around align-items-center">
+            <div class="d-flex flex-column flex-lg-row align-content-center gap-lg-5">
+                <p><a href="">Поддержка</a></p>
+                <p><a href="{{ url_for('auth.login') }}">Выход</a></p>
+            </div>
+            <div>
+                <h5 class="text-light fs-1">{{ group.name }}</h5>
+            </div>
+            <div id="filter" class="d-flex align-items-center align-content-center">
+                <a href="#" class="d-none d-lg-block"><img class="d-flex" src="{{ url_for('static', filename='images/Vector.png')}}" alt=""></a>
+                <p class="mb-0"><a href="#" class="">Фильтр</a></p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mb-5">
+        <div class="d-flex flex-wrap gap-lg-4 gap-2 justify-content-center align-items-center">
+            {% for device in group.devices %}
+            <div class="main-card p-2 rounded-4  col-xl-3 col-lg-4 col-md-5 col-11 bg-white">
+                <div class="d-flex flex-row-reverse krest">
+                    <div class="d-flex p-3"></div>
+                </div>
+                <div class="d-flex align-items-center justify-content-around mb-lg-3 mb-2">
+                    {% if device.type == 'computer' %}
+                    <img class="w-25" src="{{ url_for('static', filename='/images/computer.png')}}" alt="">
+                    {% elif device.type == 'printer' %}
+                    <img class="w-25" src="{{ url_for('static', filename='/images/printer.png')}}" alt="">
+                    {% else %}
+                     <img class="w-25" src="{{ url_for('static', filename='/images/other.png')}}" alt="">
+                    {% endif %}
+                    <div class="flex-column">
+                        <h5>ID: <span class="device-id filter-name">{{ device.id }}</span></h5>
+                        {% if device.privilege == 'admin' %}
+                        <h6>Роль: <span class="device-id filter-name">Администратор</span></h6>
+                        {% elif device.privilege == 'teacher' %}
+                        <h6>Роль: <span class="device-id filter-name">Преподаватель</span></h6>
+                        {% else %}
+                        <h6>Роль: <span class="device-id filter-name">Студент</span></h6>
+                        {% endif %}
+                    </div>
+                    
+                </div>
+                <div class="card-title">
+                    <h5 class="fw-bold">Последний комментарий: </h5>
+                </div>
+                <div class="bg-purple w-75 h-25 rounded-4 p-2 mb-lg-3 mb-2">
+                    <p>{{ device.last_comment }}</p>
+                </div>
+                <div class="date">
+                    <h5 class="fw-bold">
+                        {{ device.last_comment_time.strftime('%Y-%m-%d %H:%M') }}
+                    </h5>
+                </div>
+                <div class="d-flex justify-content-between ">
+                    <button id="{{ device.id }}" class="teacher_message bg-body-secondary btn d-flex align-items-center rounded-5  px-2">
+                        <h6 class="text-black mb-0">Сообщить о поломке</h6>
+                    </button>
+                    {% if device.status == 'working' %}
+                    <div class="p-4 working  bg-success rounded-circle status">
+                    </div>
+                    {% elif device.status == 'problem' %}
+                    <div class="p-4 problem  bg-warning rounded-circle status">
+                    </div>
+                    {% else %}
+                    <div class="p-4 broken  bg-danger rounded-circle status">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
+    <!-- ВСПЛЫВАЮЩЕЕ ОКНО ФИЛЬТРА -->
+    <div id="popup" class="d-none position-fixed start-50 top-50 bg-white popup col-10 col-lg-4 col-xxl-3 rounded-3 p-3 shadow">
+        <div class="krest d-flex flex-row-reverse mb-3">
+            <button id="krest" class="d-flex btn rounded-circle p-2">
+                <img class="" src="{{ url_for('static', filename='images/krest.png')}}" alt="">
+            </button>
+        </div>
+        <div class="main_popup_title d-flex justify-content-between mb-3">
+            <h4>Фильтр</h4>
+            <a class="text-primary" href="">Очистить</a>
+        </div>
+        <div class="mb-3">
+            <h6 class="text-body-secondary mb-3">ID</h6>
+            <input class="w-100 " id="filter_input" type="search" style="outline: none">
+        </div>
+        <div class="">
+            <h6 class="text-body-secondary">Состояние</h6>
+            <div class="position-relative multi-button d-flex justify-content-between text-black rounded-5 bg-body-secondary z-0">
+                <button class="pos btn rounded-5 z-2 border-0">
+                    Исправно
+                </button>
+                <button class="pos btn rounded-5 z-2 border-0">
+                    Проблема
+                </button>
+                <button class="pos btn rounded-5 z-2 border-0">
+                    Поломка
+                </button>
+                <div id="pill" class="d-none position-absolute rounded-5 btn bg-success z-1"><p class="opacity-0 m-0">Исправно</p></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- СООБЩЕНИЕ О ПОЛОМКЕ -->
+    <form method="POST" action="/teacher/dashboard/change_status" id="popup_card" class="d-none position-fixed start-50 top-50 bg-white popup_teacher col-10 col-lg-4 col-xxl-3 rounded-3 p-3 shadow">
+        <input name="id" id="popup_status_id" class="d-none">
+        <input name="status" id="popup_status_status" class="d-none">
+        <div class="krest_teacher d-flex flex-row-reverse mb-3">
+            <button type="button" id="krest_teacher" class="d-flex btn rounded-circle p-2">
+                <img class="" src="{{ url_for('static', filename='images/krest.png')}}" alt="">
+            </button>
+        </div>
+        <div class="d-flex justify-content-between mb-3">
+            <h4>Сообщение о поломке</h4>
+        </div>
+        <div class="">
+            <h6 class="text-body-secondary">Состояние</h6>
+            <div class="position-relative multi-button d-flex justify-content-between text-black rounded-5 bg-body-secondary z-0">
+                <div class="add-pill position-absolute rounded-5 btn bg-warning z-1 w-50"><p class="opacity-0 m-0">Исправно</p></div>
+                <button type="button" class="pos-add btn rounded-5 z-2 border-0 w-50">
+                    Проблема
+                </button>
+                <button type="button" class="pos-add btn rounded-5 z-2 border-0 w-50">
+                    Поломка
+                </button>
+                
+            </div>
+        </div>
+        <div class="mt-4">
+            <h6 class="text-body-secondary">Ваш комментарий</h6>
+            <div class="d-flex align-items-center">
+                <textarea maxlength="500" name="comment"  class="form-control me-2" rows="2" placeholder="Введите ваш комментарий"></textarea>
+                <button type="submit" class="btn d-flex align-items-center p-2">
+                    <img src="{{ url_for('static', filename='images/message.png')}}" alt="Отправить" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+        </div>
+    </form>
