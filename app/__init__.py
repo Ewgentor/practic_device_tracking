@@ -7,20 +7,17 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
 
-    # Инициализация расширений с приложением
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
 
     with app.app_context():
-        # Импорт и регистрация маршрутов
         from .routes import auth, admin, teacher, student
         app.register_blueprint(auth.bp)
         app.register_blueprint(admin.bp)
         app.register_blueprint(teacher.bp)
         app.register_blueprint(student.bp)
 
-        # Создание таблиц в базе данных
         db.create_all()
 
     return app

@@ -14,7 +14,6 @@ bp = Blueprint('teacher', __name__)
 @login_required
 @role_required('teacher')
 def dashboard():
-    # Предполагаем, что у преподавателя есть поле group_id
     group = Group.query.get_or_404(current_user.group_id)
     return render_template('teacher/dashboard.html', group=group)
 
@@ -33,5 +32,3 @@ def change_status():
         device.last_comment_time = datetime.now()
         db.session.commit()
     return redirect(url_for('teacher.dashboard'))
-    # group = Group.query.get_or_404(current_user.group_id)
-    # return render_template('teacher/dashboard.html', group=group)

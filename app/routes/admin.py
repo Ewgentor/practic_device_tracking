@@ -44,21 +44,18 @@ def view_group(group_id):
 @login_required
 @role_required('admin')
 def delete_group(group_id):
-    # Находим устройство по ID
     group = Group.query.get_or_404(group_id)
 
-    # Удаляем устройство из базы данных
     try:
         db.session.delete(group)
         db.session.commit()
     except Exception as e:
         db.session.rollback()
 
-    # Перенаправляем обратно на страницу группы
     return redirect('/admin/dashboard')
 
 
-@bp.route('/admin/group/<int:group_id>/change_status', methods=['GET','POST'])
+@bp.route('/admin/group/<int:group_id>/change_status', methods=['POST', 'GET'])
 @login_required
 @role_required('admin')
 def change_status(group_id):
@@ -96,15 +93,10 @@ def add_device(group_id):
 @login_required
 @role_required('admin')
 def delete_device(device_id):
-    # Находим устройство по ID
     device = Device.query.get_or_404(device_id)
-
-    # Удаляем устройство из базы данных
     try:
         db.session.delete(device)
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-
-    # Перенаправляем обратно на страницу группы
     return redirect(url_for('admin.view_group', group_id=device.group_id))

@@ -6,7 +6,7 @@ from app.extensions import db
 bp = Blueprint('auth', __name__)
 
 
-@bp.route('/login', methods=['GET', 'POST'])
+@bp.route('/login', methods=[ 'POST', 'GET'])
 def login():
     if request.method == 'POST':
         device_id = request.form.get('device_id')
